@@ -11,6 +11,7 @@ const {
   getSubmissionDataController,
   snedEvaluateController,
   addStarToUserController,
+  getUserRankingController
 } = require("../controllers/missionController");
 
 const router = express.Router();
@@ -26,5 +27,8 @@ router.get(
   requireSignIn,
   addStarToUserController
 );
+router.get("/user/rankings", requireSignIn, getUserRankingController);
+
+
 
 module.exports = router;

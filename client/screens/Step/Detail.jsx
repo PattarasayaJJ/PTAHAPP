@@ -15,7 +15,7 @@ import axios from "axios";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import EvaluationModal from "../../components/EvaluationModal";
 import SuccessModal from "../../components/SuccessModal";
-import { Alert } from "react-native";  // ✅ นำเข้า Alert จาก react-native
+import CustomAlertModal from "../../components/CustomAlertModal";
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,6 +36,8 @@ const StepDetailScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [evaluated, setEvaluated] = useState(false);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
+  const [isExitModalVisible, setExitModalVisible] = useState(false);
+
 
   useEffect(() => {
     handleGetMissionDetail();
@@ -163,24 +165,14 @@ const StepDetailScreen = ({ navigation, route }) => {
 
   const handleGoBack = () => {
     if (isRunning && !route.params.isEvaluatedToday) {
-    Alert.alert(
-      "แจ้งเตือน",
-      "หากออกจากด่าน เวลาจะเริ่มนับใหม่ คุณแน่ใจหรือไม่?",
-      [
-        {
-          text: "ยกเลิก",
-          style: "cancel",
-        },
-        {
-          text: "ออก",
-          onPress: () => navigation.goBack(),
-        },
-      ]
-    );
-  } else {
-    navigation.goBack();
-  }
-};
+      setIsRunning(false); // ⏸ หยุดนับเวลาเมื่อเปิด Modal
+
+      setExitModalVisible(true); // ✅ แสดง Modal แทน Alert
+    } else {
+      navigation.goBack();
+    }
+  };
+
 
   return (
     <View style={styles.gradient}>
@@ -189,9 +181,21 @@ const StepDetailScreen = ({ navigation, route }) => {
   <FontAwesome5 name="chevron-left" color="#6bdbfc" size={18} />
 </TouchableOpacity>
 
+ {/* ✅ Modal แจ้งเตือนเมื่อผู้ใช้กด "ออกจากด่าน" */}
+ <CustomAlertModal
+        visible={isExitModalVisible}
+        onClose={() => {setExitModalVisible(false)
+          setIsRunning(true); // ▶️ เริ่มนับเวลาใหม่เมื่อปิด Modal
 
-
+        }}
         
+        onConfirm={() => {
+          setExitModalVisible(false);
+          navigation.goBack();
+        }}
+      />
+
+
         {isLoading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#0096bd" />
@@ -201,9 +205,9 @@ const StepDetailScreen = ({ navigation, route }) => {
           <View>
             {evaluated && (
               <View style={{ alignItems: "flex-end", marginRight: 10 }}>
-                <Text style={styles.stepNumber}>
-                  <FontAwesome5 name="stopwatch" color="#6bdbfc" size={18} />
-                  <Text style={{ fontSize: 18, color: "#6bdbfc" }}>
+                <Text style={styles.oclock}>
+                  <FontAwesome5 name="stopwatch" color="#6bdbfc" size={16} />
+                  <Text style={{ fontSize: 16, color: "#6bdbfc" }}>
                     {" "}
                     {formatTime(time)}
                     {" น."}
@@ -239,7 +243,8 @@ const StepDetailScreen = ({ navigation, route }) => {
                   >
                     <Text
                       style={{
-                        textAlign: "center",
+                        textAlign: "center", fontFamily: "Kanit",
+
                         color: isSelected === idx ? "white" : "#66C4FF",
                       }}
                     >
@@ -277,6 +282,8 @@ const StepDetailScreen = ({ navigation, route }) => {
                           : "",
                       }}
                     />
+                       <Text style={styles.imageThera}>หมายเหตุ : ทำซ้ำๆท่าละ 10-20 ครั้ง</Text>
+
                       <Text style={styles.imageDescription}>กดที่รูปเพื่อขยาย</Text>
 
                   </TouchableOpacity>
@@ -350,24 +357,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
-    paddingVertical: 8,
+    paddingVertical: 5,
     alignItems: "center",
   },
   backButton: {
     marginLeft: 30,
+    marginTop:20
   },
   tabBtn: {
     width: 80,
-    padding: 10,
+    padding: 8,
     marginLeft: 10,
     borderRadius: 7,
     borderColor:"#87CEFA",
-    borderWidth:1
+    borderWidth:1,
+    fontFamily: "Kanit",
+
   },
   stepNumber: {
     fontSize: 16,
     color: "#333",
-    marginBottom: 20,
+    marginBottom: 10,
+    fontFamily: "Kanit",
+  },
+  oclock: {
+    fontSize: 16,
+    color: "#333",
     fontFamily: "Kanit",
   },
   video: {
@@ -382,9 +397,10 @@ const styles = StyleSheet.create({
   borderRadius: 10,
   alignSelf: "center",
   resizeMode: "contain", // ให้ภาพพอดีกับพื้นที่โดยไม่ถูกบีบ
+  
 },
   nextButton: {
-    padding: 12,
+    padding: 10,
     borderRadius: 24,
     width: 100,
     backgroundColor: "#66C4FF",    
@@ -396,7 +412,8 @@ const styles = StyleSheet.create({
   nextButtonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Kanit",
+
   },
   loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
   loadingText: { color: "#0096bd", fontSize: 16, marginTop: 10 },
@@ -408,12 +425,12 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: "absolute",
-    top: 40,
+    top: 50,
     right: 20,
     zIndex: 1,
     backgroundColor: "white",
-    padding: 10,
-    borderRadius: 20,
+    padding: 12,
+    borderRadius: 30,
   },
   expandedImage: {
     width: width * 0.9,
@@ -425,8 +442,17 @@ const styles = StyleSheet.create({
     marginTop: 8, // เว้นระยะห่างจากรูปภาพ
     fontSize: 14,
     color: "#555", // สีเทาอ่อนเพื่อให้อ่านง่าย
-    textAlign:"center"
+    textAlign:"center",
+    fontFamily: "Kanit",
+
   },
+  imageThera:{
+    fontSize: 14,
+    color: "red", // สีเทาอ่อนเพื่อให้อ่านง่าย
+    textAlign:"center",
+    fontFamily: "Kanit",
+
+  }
   
 });
 

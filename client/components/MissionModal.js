@@ -59,7 +59,7 @@ const MissionModal = ({ visible, mission = {}, onClose, onStart }) => {
                 ท่า
               </Text>
               <Text style={styles.note}>
-                หมายเหตุ : มีการนับเวลาในการทำกายภาพ
+                หมายเหตุ : มีการนับเวลาและประเมินในการทำกายภาพ
               </Text>
             </>
           )}
@@ -171,12 +171,14 @@ const styles = StyleSheet.create({
   skipButtonText: {
     color: "#66C4FF",
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily:"Kanit"
+
   },
   startButtonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily:"Kanit"
+
   },
 });
 

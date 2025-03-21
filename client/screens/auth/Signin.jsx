@@ -55,11 +55,13 @@ const Signin = ({ navigation }) => {
       <ScrollView>
         <Image source={require("../../img/logo_blue.png")} style={styles.img} />
         <View style={styles.bginput}>
-          <InputBox
-            inputTitle="รหัสบัตรประชาชน"
-            value={ID_card_number}
-            setValue={setID_card_number}
-          />
+        <InputBox
+  inputTitle="รหัสบัตรประชาชน"
+  value={ID_card_number}
+  setValue={setID_card_number}
+  maxLength={13} // ✅ จำกัดให้พิมพ์ได้สูงสุด 13 หลัก
+  numericOnly={true} // ✅ เปิดโหมดกรอกเฉพาะตัวเลข
+/>
           <InputBox
             inputTitle="รหัสผ่าน"
             secureTextEntry={true}
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
     paddingVertical: 50,
     paddingHorizontal: 50,
     borderTopLeftRadius: 80,
-    borderTopRightRadius: 75,
+    borderTopRightRadius: 80,
     marginTop: 74,
     height: 550,
   },

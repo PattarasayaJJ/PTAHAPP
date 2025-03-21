@@ -4,11 +4,12 @@ import React from "react";
 const InputBox = ({
   inputTitle,
   autoComplete,
-  keyboardType,
+  keyboardType = "default",
   secureTextEntry = false,
   value,
   setValue,
   maxLength,
+  numericOnly = false, // ✅ เพิ่ม prop เพื่อตรวจสอบว่าต้องการเฉพาะตัวเลขหรือไม่
 }) => {
   return (
     <View>
@@ -16,16 +17,20 @@ const InputBox = ({
       <TextInput
         style={styles.inputBox}
         autoCorrect={false}
-        keyboardType={keyboardType}
+        keyboardType={numericOnly ? "number-pad" : keyboardType} // ✅ ใช้ "number-pad" เมื่อกำหนดให้เป็นตัวเลข
         autoComplete={autoComplete}
         secureTextEntry={secureTextEntry}
         value={value}
         maxLength={maxLength}
-        onChangeText={(text) => setValue(text)}
+        onChangeText={(text) => {
+          const filteredText = numericOnly ? text.replace(/[^0-9]/g, "") : text; // ✅ กรองเฉพาะตัวเลข
+          setValue(filteredText);
+        }}
       />
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   inputTitle: {

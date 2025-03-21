@@ -36,8 +36,7 @@ const TherapyFeedback = () => {
 
   // Month filter (ค่าตั้งต้น "all")
   const [monthFilter, setMonthFilter] = useState("all");
-  // state เกี่ยวกับ DropDownPicker สำหรับเดือน (ไม่ใช้งานแล้ว แต่ยังคงไว้)
-  const [monthOpen, setMonthOpen] = useState(false);
+
 
   // Filtered results
   const [filteredFeedbacks, setFilteredFeedbacks] = useState([]);
@@ -202,8 +201,8 @@ const TherapyFeedback = () => {
               open={sortOpen}
               value={sortOrder}
               items={[
-                { label: "วันที่ตอบกลับล่าสุด", value: "newest" },
-                { label: "วันที่ตอบกลับเก่าที่สุด", value: "oldest" },
+                { label: "ตอบกลับล่าสุด", value: "newest" },
+                { label: "ตอบกลับเก่าที่สุด", value: "oldest" },
                 { label: "ทำได้ดี", value: "good" },
                 { label: "ควรปรับปรุง", value: "improve" },
               ]}
@@ -211,6 +210,9 @@ const TherapyFeedback = () => {
               setValue={setSortOrder}
               placeholder="เรียงลำดับ"
               style={styles.dropdown}
+              textStyle={{ fontFamily: "Kanit", fontSize: 15 }} // ✅ เปลี่ยนฟอนต์ของข้อความใน Dropdown
+              labelStyle={{ fontFamily: "Kanit", fontSize: 15 }} // ✅ เปลี่ยนฟอนต์ของ Label
+
               dropDownContainerStyle={styles.dropdownMenu}
               listMode="SCROLLVIEW"
             />
@@ -352,7 +354,9 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 18,
     textAlign: 'left', // ให้ placeholder และข้อความใน TextInput อยู่ทางขวา,
-    paddingLeft:30
+    paddingLeft:30,
+    fontFamily: "Kanit",
+
 
   },
   searchIcon: {
@@ -377,9 +381,13 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     borderWidth: 1,
     borderColor: "#87CEFA",
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     height: 42, // ✅ กำหนดความสูงให้แน่นอน (เช่นเดียวกับปุ่มเลือกเดือน)
     width: "100%",
+    fontFamily: "Kanit",
+
+    
+
   },
   dropdownMenu: {
     backgroundColor: "white",
@@ -398,14 +406,14 @@ const styles = StyleSheet.create({
     margin:5
   },
   monthSelectButton: {
-    backgroundColor: "white",
+    backgroundColor: "#C2E8FF",
     borderRadius: 5,
-    height: 40, // ✅ ปรับความสูงให้เท่ากับ DropDownPicker
+    height: 42, // ✅ ปรับความสูงให้เท่ากับ DropDownPicker
     justifyContent: "center", // ✅ จัดให้อยู่ตรงกลาง
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#87CEFA",
-    width: "60%", 
+    width: "50%", 
   },
   monthSelectButtonText: {
     fontFamily: "Kanit",

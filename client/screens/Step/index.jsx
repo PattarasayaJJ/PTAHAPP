@@ -183,21 +183,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  progressBarBackground: {
-    flex: 1,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#e0e0e0",
-    overflow: "hidden",
-    marginRight: 10,
-  },
-  progressBar: {
-    height: "100%",
-    borderRadius: 4,
-  },
+ 
+
   progressText: {
-    fontSize: 14,
-    color: "#555",
+    fontSize: 15,
+    fontFamily: "Kanit",
+
   },
 });
 

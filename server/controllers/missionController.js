@@ -329,6 +329,67 @@ const addStarToUserController = async (req, res) => {
   }
 };
 
+
+const getUserRankingController = async (req, res) => {
+  try {
+    console.log("✅ Rankings API called");
+
+    // ✅ ดึงเฉพาะผู้ใช้ที่มี physicalTherapy: true
+    const users = await UserModel.find({ physicalTherapy: true });
+
+    if (!users.length) {
+      return res.status(404).json({ success: false, message: "No users found with physicalTherapy: true", rankings: [] });
+    }
+
+    const rankings = await Promise.all(
+      users.map(async (user) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today.getTime() + 86400000);
+
+        // ✅ นับจำนวนการประเมินของผู้ใช้ในวันนี้
+        const evaluationCount = await EvaluateModel.countDocuments({
+          userId: user._id,
+          created_at: { $gte: today, $lt: tomorrow },
+        });
+
+        // ✅ ดึง `firstEvaluationTime` จาก `EvaluateModel`
+        const firstEvaluation = await EvaluateModel.findOne({
+          userId: user._id,
+          created_at: { $gte: today, $lt: tomorrow },
+        })
+          .sort({ created_at: 1 }) // เรียงลำดับจากเก่าสุดไปใหม่สุด
+          .select("created_at");
+
+        return {
+          userId: user._id.toString(),
+          name: user.name?.trim() || "ไม่ระบุ",
+          surname: user.surname?.trim() || " ",
+          totalStars: user.stars || 0,
+          evaluationCount: evaluationCount || 0, // ✅ จำนวนการส่งการประเมินวันนี้
+          firstEvaluationTime: firstEvaluation ? firstEvaluation.created_at.toISOString() : null, // ✅ เวลาที่ส่งครั้งแรก
+        };
+      })
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "User rankings retrieved successfully",
+      rankings,
+    });
+  } catch (error) {
+    console.error("❌ Error in getUserRankingController:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving user rankings",
+      rankings: [],
+    });
+  }
+};
+
+
+
+
 module.exports = {
   createMissionController,
   getAllMissionController,
@@ -337,4 +398,5 @@ module.exports = {
   getSubmissionDataController,
   snedEvaluateController,
   addStarToUserController,
+  getUserRankingController 
 };
