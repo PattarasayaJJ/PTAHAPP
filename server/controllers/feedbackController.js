@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const feedbackModel = require("../models/feedbackModel");
-const MPersonnel = require("../models/mpersonnelModel"); 
+const MPersonnel = require("../models/MpersonnelModel"); 
 
 
 // บันทึก Feedback
