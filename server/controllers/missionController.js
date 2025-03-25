@@ -334,11 +334,14 @@ const getUserRankingController = async (req, res) => {
   try {
     console.log("✅ Rankings API called");
 
-    // ✅ ดึงเฉพาะผู้ใช้ที่มี physicalTherapy: true
     const users = await UserModel.find({ physicalTherapy: true });
 
     if (!users.length) {
-      return res.status(404).json({ success: false, message: "No users found with physicalTherapy: true", rankings: [] });
+      return res.status(404).json({
+        success: false,
+        message: "No users found with physicalTherapy: true",
+        rankings: [],
+      });
     }
 
     const rankings = await Promise.all(
@@ -347,18 +350,16 @@ const getUserRankingController = async (req, res) => {
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today.getTime() + 86400000);
 
-        // ✅ นับจำนวนการประเมินของผู้ใช้ในวันนี้
         const evaluationCount = await EvaluateModel.countDocuments({
           userId: user._id,
           created_at: { $gte: today, $lt: tomorrow },
         });
 
-        // ✅ ดึง `firstEvaluationTime` จาก `EvaluateModel`
         const firstEvaluation = await EvaluateModel.findOne({
           userId: user._id,
           created_at: { $gte: today, $lt: tomorrow },
         })
-          .sort({ created_at: 1 }) // เรียงลำดับจากเก่าสุดไปใหม่สุด
+          .sort({ created_at: 1 }) 
           .select("created_at");
 
         return {
@@ -366,11 +367,33 @@ const getUserRankingController = async (req, res) => {
           name: user.name?.trim() || "ไม่ระบุ",
           surname: user.surname?.trim() || " ",
           totalStars: user.stars || 0,
-          evaluationCount: evaluationCount || 0, // ✅ จำนวนการส่งการประเมินวันนี้
-          firstEvaluationTime: firstEvaluation ? firstEvaluation.created_at.toISOString() : null, // ✅ เวลาที่ส่งครั้งแรก
+          evaluationCount: evaluationCount || 0,
+          firstEvaluationTime: firstEvaluation
+            ? firstEvaluation.created_at.toISOString()
+            : null,
         };
       })
     );
+
+    rankings.sort((a, b) => {
+      if (b.evaluationCount !== a.evaluationCount) {
+        return b.evaluationCount - a.evaluationCount;
+      }
+    
+      if (b.totalStars !== a.totalStars) {
+        return b.totalStars - a.totalStars;
+      }
+    
+      if (a.firstEvaluationTime && b.firstEvaluationTime) {
+        return new Date(a.firstEvaluationTime) - new Date(b.firstEvaluationTime);
+      }
+    
+      if (!a.firstEvaluationTime && b.firstEvaluationTime) return 1;
+      if (a.firstEvaluationTime && !b.firstEvaluationTime) return -1;
+    
+      return 0;
+    });
+    
 
     res.status(200).json({
       success: true,

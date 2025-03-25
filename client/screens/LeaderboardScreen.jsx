@@ -13,13 +13,12 @@ const LeaderboardScreen = () => {
       fetchLeaderboard();
     }
   }, [authState.token]);
-  
 
   const fetchLeaderboard = async () => {
     try {
-      setLoading(true); // ✅ เปิด loading ตอนเริ่มโหลดข้อมูล
+      setLoading(true);
       const token = authState.token;
-    
+
       const response = await fetch("http://10.0.2.2:8080/api/v1/mission/user/rankings", {
         method: "GET",
         headers: {
@@ -27,87 +26,116 @@ const LeaderboardScreen = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-    
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    
+
       const data = await response.json();
-      console.log("📌 API Response:", JSON.stringify(data, null, 2)); // ✅ ตรวจสอบ JSON
-    
+
+      // ✅ Log ข้อมูลแบบสวยงาม
+      console.log("\n================ 📦 ผลลัพธ์จาก API /rankings =================");
+      console.log("✅ ทั้งหมด:", data);
+      
       if (data.success && Array.isArray(data.rankings)) {
+        console.log("\n---------------- ✅ Rankings ที่ได้ ----------------");
+        data.rankings.forEach((item, index) => {
+          console.log(`อันดับ ${index + 1}`);
+          console.log(`  👤 ${item.name} ${item.surname}`);
+          console.log(`  ⭐ ดาว: ${item.totalStars}`);
+          console.log(`  📊 ประเมิน: ${item.evaluationCount} ครั้ง`);
+          console.log(`  ⏱️ เวลาแรก: ${item.firstEvaluationTime}`);
+          console.log("--------------------------------------------------");
+        });
+      
         const cleanedData = data.rankings.map((item) => ({
           userId: item.userId?.trim() || "ไม่ระบุ",
           name: item.name?.trim() || "ไม่ระบุ",
           surname: item.surname?.trim() || " ",
           totalStars: item.totalStars || 0,
           evaluationCount: item.evaluationCount || 0,
-          firstEvaluationTime: item.firstEvaluationTime ? new Date(item.firstEvaluationTime).toLocaleString("th-TH") : "ไม่มีข้อมูล",
+          firstEvaluationTime: item.firstEvaluationTime
+            ? new Date(item.firstEvaluationTime).toLocaleString("th-TH")
+            : "ไม่มีข้อมูล",
         }));
-  
+      
+        console.log("\n✅ 🧼 ข้อมูลหลัง Clean แล้ว:", cleanedData);
+        console.log("====================================================\n");
+      
         setLeaderboard(cleanedData);
         setLastUpdated(new Date());
       } else {
-        console.error("API Error:", data.message);
-        setLeaderboard([]); // ✅ ป้องกันค่า `undefined`
+        console.error("❌ API Error:", data.message);
+        setLeaderboard([]);
       }
+      
+      
     } catch (error) {
       console.error("Error fetching leaderboard:", error.message);
-      setLeaderboard([]); // ✅ ป้องกันกรณีเกิด error
+      setLeaderboard([]);
     } finally {
-      setLoading(false); // ✅ ปิด loading เสมอ
+      setLoading(false);
     }
   };
-  
-  
 
   const formatDate = (date) => {
     if (!date) return "";
     const thaiYear = date.getFullYear() + 543;
-    return date.toLocaleString("th-TH", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    }).replace(/\d{4}/, thaiYear)
+    return date
+      .toLocaleString("th-TH", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+      .replace(/\d{4}/, thaiYear)
       .replace("ค.ศ.", "พ.ศ.");
   };
 
+  const isCurrentUser = (userId) => {
+    const currentId = authState.user?.id || authState.user?._id || "";
+    return String(userId).trim() === String(currentId).trim();
+  };
+  
+  const getDisplayName = (userId, name, surname) => {
+    if (isCurrentUser(userId)) {
+      return `${name} ${surname}`;
+    }
+    return `${name.slice(0, 3)}***  ${surname.slice(0, 3)}**`;
+  };
+  
+
   const renderPodium = () => {
     if (leaderboard.length < 3) return null;
-  
+
     const [first = {}, second = {}, third = {}] = leaderboard?.slice(0, 3) || [];
-  
+
     return (
       <View style={styles.podiumContainer}>
         {/* อันดับที่ 1 */}
-        <Text style={[styles.rankName, styles.rank1]}>
-          {first.name.slice(0, 3)}***  {first.surname.slice(0, 3)}**
+        <Text style={[styles.rankName, styles.rank1, isCurrentUser(first.userId) && styles.currentUserName]}>
+        {getDisplayName(first.userId, first.name, first.surname)}
         </Text>
         <Text style={[styles.rankStars, styles.star1]}>{first.totalStars} ⭐</Text>
-        <Text style={[styles.evaluationCount, styles.count1]}>({first.evaluationCount} ครั้ง)</Text>
-  
+
         {/* อันดับที่ 2 */}
-        <Text style={[styles.rankName, styles.rank2]}>
-          {second.name.slice(0, 3)}***  {second.surname.slice(0, 3)}**
+        <Text style={[styles.rankName, styles.rank2, isCurrentUser(second.userId) && styles.currentUserName]}>
+        {getDisplayName(second.userId, second.name, second.surname)}
         </Text>
         <Text style={[styles.rankStars, styles.star2]}>{second.totalStars} ⭐</Text>
-        <Text style={[styles.evaluationCount, styles.count2]}>({second.evaluationCount} ครั้ง)</Text>
-  
+
         {/* อันดับที่ 3 */}
-        <Text style={[styles.rankName, styles.rank3]}>
-          {third.name.slice(0, 3)}***  {third.surname.slice(0, 3)}**
+        <Text style={[styles.rankName, styles.rank3, isCurrentUser(third.userId) && styles.currentUserName]}>
+        {getDisplayName(third.userId, third.name, third.surname)}
         </Text>
         <Text style={[styles.rankStars, styles.star3]}>{third.totalStars} ⭐</Text>
-        <Text style={[styles.evaluationCount, styles.count3]}>({third.evaluationCount} ครั้ง)</Text>
-  
+
         <Image source={require("../img/podium.png")} style={styles.podiumImage} />
       </View>
     );
   };
-  
 
   if (loading) {
     return (
@@ -117,7 +145,6 @@ const LeaderboardScreen = () => {
       </View>
     );
   }
-  
 
   return (
     <View style={styles.container}>
@@ -131,20 +158,20 @@ const LeaderboardScreen = () => {
       <FlatList
         data={leaderboard.slice(3)}
         keyExtractor={(item) => item.userId}
-        renderItem={({ item, index }) => {
-          const isCurrentUser = item.userId === authState.user?.id;
-
-          return (
-            <View style={styles.row}>
-              <Text style={styles.rank}>{index + 4}</Text>
-              <Text style={[styles.name, isCurrentUser && styles.currentUserName]}>
-                {item.name.slice(0, 3)}***  {item.surname.slice(0, 3)}**
-              </Text>
-              <Text style={styles.stars}>{item.totalStars} ⭐</Text>
-              <Text style={styles.evaluationCountt}>({item.evaluationCount} ครั้ง)</Text>
-            </View>
-          );
-        }}
+        renderItem={({ item, index }) => (
+          <View style={styles.row}>
+            
+            <Text style={[styles.rank, isCurrentUser(item.userId) && styles.currentUserHighlight]}>
+              {index + 4}
+            </Text>
+            <Text style={[styles.name, isCurrentUser(item.userId) && styles.currentUserHighlight]}>
+              {getDisplayName(item.userId, item.name, item.surname)}
+            </Text>
+            <Text style={[styles.stars, isCurrentUser(item.userId) && styles.currentUserHighlight]}>
+              {item.totalStars} ⭐
+            </Text>
+          </View>
+        )}
       />
     </View>
   );
@@ -206,16 +233,16 @@ const styles = StyleSheet.create({
   },
   star1: {
     top: -75,
-    left: "40%",
+    left: "50%",
     transform: [{ translateX: -20 }],
   },
   star2: {
     top: 50,
-    left: "8%",
+    left: "15%",
   },
   star3: {
     top: 70,
-    right: "20%",
+    right: "15%",
   },
   row: {
     flexDirection: "row",
@@ -243,13 +270,22 @@ const styles = StyleSheet.create({
     fontFamily: "Kanit",
   },
   evaluationCount: {
-    fontSize: 15,
-    color: "#777",
+    position: "absolute",
+    fontSize: 14,
+    color: "#666",
     fontFamily: "Kanit",
   },
+  evaluationCountt: {
+    fontSize: 13,
+    color: "#666",
+    fontFamily: "Kanit",
+    marginLeft:5,
+    top:4
+  },
   currentUserName: {
-    color: "#FFD700",
-    fontWeight: "bold",
+    color: "#87CEFA",
+    fontFamily: "Kanit",
+
   },
   loadingContainer: {
     flex: 1,
@@ -262,32 +298,27 @@ const styles = StyleSheet.create({
     color: "#555",
     fontFamily: "Kanit",
   },
-  evaluationCount: {
-    position: "absolute",
-    fontSize: 16,
-    color: "#666",
-    fontFamily: "Kanit",
-  },
-  evaluationCountt:{
-    fontSize: 16,
-    color: "#666",
-    fontFamily: "Kanit",
-  },
-  
   count1: {
-    top: -70, // วางไว้ใกล้กับชื่อของอันดับ 1
+    top: -70,
     left: "55%",
     transform: [{ translateX: -20 }],
   },
-  
   count2: {
-    top: 55, // วางไว้ใกล้กับชื่อของอันดับ 2
+    top: 55,
     left: "20%",
   },
-  
   count3: {
-    top: 75, // วางไว้ใกล้กับชื่อของอันดับ 3
+    top: 75,
     right: "4%",
+  },
+  currentUserName: {
+    color: "#87CEFA",
+    fontFamily: "Kanit",
+  },
+  currentUserHighlight: {
+    color: "#87CEFA",
+    fontFamily: "Kanit",
+
   },
 });
 

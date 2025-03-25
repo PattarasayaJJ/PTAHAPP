@@ -52,7 +52,7 @@ const ForgotPasswordCheckId = ({ navigation }) => {
       await AsyncStorage.setItem("email", data.data.email);
       await AsyncStorage.setItem("idCardNumber", ID_card_number);
     } catch (error) {
-      alert(error.response?.data?.message || "เกิดข้อผิดพลาด");
+      alert(error.response?.data?.message || "ไม่พบEmail");
       setLoading(false);
       console.log(error);
     }
