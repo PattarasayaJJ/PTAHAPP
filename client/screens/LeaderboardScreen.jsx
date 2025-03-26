@@ -19,7 +19,7 @@ const LeaderboardScreen = () => {
       setLoading(true);
       const token = authState.token;
 
-      const response = await fetch("http://10.0.2.2:8080/api/v1/mission/user/rankings", {
+      const response = await fetch("https://ptahapp-server.onrender.com/api/v1/mission/user/rankings", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

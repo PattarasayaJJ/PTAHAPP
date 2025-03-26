@@ -49,8 +49,8 @@ const PostDetails = ({ route }) => {
       }
 
       const url = replyingTo
-        ? `http://10.0.2.2:8080/api/v1/post/${post._id}/add-reply/${replyingTo}`
-        : `http://10.0.2.2:8080/api/v1/post/add-comment/${post._id}`;
+        ? `https://ptahapp-server.onrender.com/api/v1/post/${post._id}/add-reply/${replyingTo}`
+        : `https://ptahapp-server.onrender.com/api/v1/post/add-comment/${post._id}`;
 
       const response = await fetch(url, {
         method: 'POST',
@@ -93,7 +93,7 @@ const PostDetails = ({ route }) => {
         return;
       }
 
-      const response = await fetch(`http://10.0.2.2:8080/api/v1/post/delete-comment/${post._id}/${commentId}`, {
+      const response = await fetch(`https://ptahapp-server.onrender.com/api/v1/post/delete-comment/${post._id}/${commentId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ const PostDetails = ({ route }) => {
       }
 
       const response = await fetch(
-        `http://10.0.2.2:8080/api/v1/post/posts/${post._id}/comments/${commentId}/replies/${replyId}`,
+        `https://ptahapp-server.onrender.com/api/v1/post/posts/${post._id}/comments/${commentId}/replies/${replyId}`,
         
         {
           method: 'DELETE',

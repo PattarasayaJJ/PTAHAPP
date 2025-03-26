@@ -41,7 +41,7 @@ const History = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://10.0.2.2:8080/api/v1/main/datacalendar/${userId}`,
+          `https://ptahapp-server.onrender.com/api/v1/main/datacalendar/${userId}`,
           {
             headers: { Authorization: `Bearer ${authState.token}` },
           }

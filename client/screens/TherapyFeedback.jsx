@@ -77,7 +77,7 @@ const TherapyFeedback = () => {
     const fetchFeedbacks = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://10.0.2.2:8080/api/v1/feedbacks/user`, {
+        const response = await axios.get(`https://ptahapp-server.onrender.com/api/v1/feedbacks/user`, {
           params: { user_id: authState.user._id },
           headers: {
             Authorization: `Bearer ${authState.token}`,

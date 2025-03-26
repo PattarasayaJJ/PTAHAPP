@@ -34,10 +34,11 @@ const AuthProvider = ({ children }) => {
     }
   }, [state.token]);
 
-   axios.defaults.baseURL = "http://10.0.2.2:8080/api/v1";
-  // axios.defaults.baseURL = "http://192.168.1.105:8080/api/v1";
-  //axios.defaults.baseURL = "http://localhost:8080/api/v1";
+   //axios.defaults.baseURL = "http://10.0.2.2:8080/api/v1";
 
+   axios.defaults.baseURL = "https://ptahapp-server.onrender.com/api/v1";
+
+ 
   const getNotiCount = async () => {
     try {
       const response = await axios.get("/notification/get-all-notification");

@@ -312,6 +312,8 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 5,
     marginHorizontal: 16,
+    fontFamily: "Kanit",
+
   },
   input: {
     backgroundColor: "#fff",
@@ -323,6 +325,8 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     marginBottom: 20,
     marginHorizontal: 16,
+    color: "#333",
+
   },
   submitButton: {
     backgroundColor: "#66C4FF",

@@ -59,7 +59,7 @@ const TherapyFeedbackDetail = ({ route }) => {
 
         const fetchEvaluations = async () => {
             try {
-                const response = await axios.post("http://10.0.2.2:8080/api/v1/evaluation", {
+                const response = await axios.post("https://ptahapp-server.onrender.com/api/v1/evaluation", {
                     user_id: authState?.user?._id,
                     date: formattedDate,
                 });

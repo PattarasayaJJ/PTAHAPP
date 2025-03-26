@@ -7,43 +7,49 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Signin = ({ navigation }) => {
-  // สถานะโกลบอล
   const [state, setState] = useContext(AuthContext);
 
-  // สถานะภายใน
   const [ID_card_number, setID_card_number] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ฟังก์ชันจัดการการลงชื่อเข้าใช้
   const handleSubmit = async () => {
+    if (loading) return; // ✅ ป้องกันกดซ้ำ
     try {
       setLoading(true);
+
       if (!ID_card_number || !password) {
         Alert.alert("กรุณากรอกข้อมูล");
         setLoading(false);
         return;
       }
 
-      const { data } = await axios.post("/auth/signin", {
-        ID_card_number,
-        password,
-      });
-      setState(data);
-      await AsyncStorage.setItem("@auth", JSON.stringify(data));
+      // ✅ ใช้ absolute URL ไปเลย
+      const { data } = await axios.post(
+        "https://ptahapp-server.onrender.com/api/v1/auth/signin",
+        {
+          ID_card_number,
+          password,
+        }
+      );
 
-      navigation.navigate("Home");
-      console.log("Sign In ==>", { ID_card_number, password });
+      if (data?.token) {
+        setState(data);
+        await AsyncStorage.setItem("@auth", JSON.stringify(data));
+        navigation.navigate("Home");
+        console.log("Sign In ==>", { ID_card_number, password });
+      } else {
+        Alert.alert("เข้าสู่ระบบไม่สำเร็จ", "ข้อมูลไม่ถูกต้องหรือเกิดข้อผิดพลาด");
+      }
 
       setLoading(false);
     } catch (error) {
       alert(error.response?.data?.message || "เกิดข้อผิดพลาด");
       setLoading(false);
-      console.log(error);
+      console.log("Signin error:", error.response?.data || error.message);
     }
   };
 
-  // ฟังก์ชันชั่วคราวเพื่อตรวจสอบข้อมูลใน Local Storage
   const getLocalStorageData = async () => {
     let data = await AsyncStorage.getItem("@auth");
     console.log("Local Storage ==>", data);
@@ -55,13 +61,13 @@ const Signin = ({ navigation }) => {
       <ScrollView>
         <Image source={require("../../img/logo_blue.png")} style={styles.img} />
         <View style={styles.bginput}>
-        <InputBox
-  inputTitle="รหัสบัตรประชาชน"
-  value={ID_card_number}
-  setValue={setID_card_number}
-  maxLength={13} // ✅ จำกัดให้พิมพ์ได้สูงสุด 13 หลัก
-  numericOnly={true} // ✅ เปิดโหมดกรอกเฉพาะตัวเลข
-/>
+          <InputBox
+            inputTitle="รหัสบัตรประชาชน"
+            value={ID_card_number}
+            setValue={setID_card_number}
+            maxLength={13}
+            numericOnly={true}
+          />
           <InputBox
             inputTitle="รหัสผ่าน"
             secureTextEntry={true}
@@ -69,15 +75,17 @@ const Signin = ({ navigation }) => {
             value={password}
             setValue={setPassword}
           />
-          <SubmitButton btnTitle="เข้าสู่ระบบ" handleSubmit={handleSubmit} />
+          <SubmitButton
+            btnTitle="เข้าสู่ระบบ"
+            handleSubmit={handleSubmit}
+            loading={loading} // ✅ ส่ง loading เข้าไปให้ปุ่มแสดงสถานะ
+          />
           <Text style={styles.linkText}>
-           
             <Text
               style={styles.link}
               onPress={() => navigation.navigate("ForgotPasswordCheckId")}
             >
-              {"  "}
-              ลืมรหัสผ่าน
+              {"  "}ลืมรหัสผ่าน
             </Text>{" "}
           </Text>
         </View>
