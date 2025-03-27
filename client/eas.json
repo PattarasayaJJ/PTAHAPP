@@ -12,7 +12,6 @@
       "distribution": "internal"
     },
     "production": {
-      "buildType": "app-bundle",
       "autoIncrement": true
     }
   },
