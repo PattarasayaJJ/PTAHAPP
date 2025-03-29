@@ -11,14 +11,14 @@
     "@expo-google-fonts/kanit": "^0.2.3",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/slider": "4.5.5",
-    "@react-native-firebase/app": "^21.12.2",
-    "@react-native-firebase/messaging": "^21.12.2",
+    "@react-native-firebase/app": "^21.12.3",
+    "@react-native-firebase/messaging": "^21.12.3",
     "@react-native-picker/picker": "2.9.0",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.9.24",
     "@react-navigation/stack": "^6.3.26",
     "axios": "^1.8.3",
-    "expo": "^52.0.0",
+    "expo": "~52.0.41",
     "expo-av": "~15.0.2",
     "expo-font": "~13.0.4",
     "expo-linear-gradient": "~14.0.2",
@@ -50,10 +50,23 @@
     "react-native-vector-icons": "^10.0.3",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
-    "socket.io-parser": "^4.2.4"
+    "socket.io-parser": "^4.2.4",
+    "undefined": "react-native-picker/picker"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-keyboard-aware-scroll-view",
+          "react-native-localization",
+          "react-native-notifications"
+        ],
+        "listUnknownPackages": false
+      }
+    }
+  }
 }
