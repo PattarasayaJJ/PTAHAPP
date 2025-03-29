@@ -12,7 +12,6 @@ import {
   Modal
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Picker } from "@react-native-picker/picker";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Platform } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";

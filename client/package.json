@@ -41,7 +41,6 @@
     "react-native-modal": "^13.0.1",
     "react-native-notifications": "^5.1.0",
     "react-native-paper": "^5.13.1",
-    "react-native-picker-select": "^9.3.1",
     "react-native-progress": "^5.0.1",
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.4.0",
@@ -50,8 +49,7 @@
     "react-native-vector-icons": "^10.0.3",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
-    "socket.io-parser": "^4.2.4",
-    "undefined": "react-native-picker/picker"
+    "socket.io-parser": "^4.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2"
