@@ -58,9 +58,11 @@ const Signin = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <View style={styles.logoContainer}>
         <Image source={require("../../img/logo_blue.png")} style={styles.img} />
-        <View style={styles.bginput}>
+      </View>        
+      <View style={styles.bginput}>
           <InputBox
             inputTitle="รหัสบัตรประชาชน"
             value={ID_card_number}
@@ -100,10 +102,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "white",
   },
+  logoContainer: {
+    marginTop: 80,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  
   img: {
     width: 400,
     height: 80,
-    marginTop: 130,
+    marginTop: 50,
+
   },
   linkText: {
     textAlign: "center",

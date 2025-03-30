@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   },
   rankName: {
     position: "absolute",
-    fontSize: 16,
+    fontSize: 15,
     color: "#333",
     fontFamily: "Kanit",
   },
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   },
   rank3: {
     top: 100,
-    right: "8%",
+    right: "12%",
   },
   star1: {
     top: -75,
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   },
   star3: {
     top: 70,
-    right: "15%",
+    right: "16%",
   },
   row: {
     flexDirection: "row",
@@ -253,19 +253,19 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   rank: {
-    fontSize: 17,
+    fontSize: 15,
     width: 30,
     fontWeight: "bold",
     color: "#555",
   },
   name: {
-    fontSize: 17,
+    fontSize: 15,
     flex: 1,
     color: "#444",
     fontFamily: "Kanit",
   },
   stars: {
-    fontSize: 17,
+    fontSize: 15,
     color: "#333",
     fontFamily: "Kanit",
   },

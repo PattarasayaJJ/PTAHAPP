@@ -11,9 +11,7 @@ import HeaderLogo from './HeaderLogo';
 
 
 const Home = () => {
-  const [posts, getAllPosts] = useContext(PostContext);
   const [refreshing, setRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [authState, setAuthState] = useContext(AuthContext)
   const { user } = authState
 
@@ -21,16 +19,12 @@ const Home = () => {
   // Refresh control
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    getAllPosts();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
 
-  // Function to filter posts based on the search query
-  const filteredPosts = posts.filter((post) =>
-    post.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
 
   return (
     <View style={styles.container}>
